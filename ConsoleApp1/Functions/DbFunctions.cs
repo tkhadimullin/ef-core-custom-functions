@@ -1,13 +1,15 @@
-﻿using System.Linq.Expressions;
+﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
-using ConsoleApp1.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.ExpressionTranslators;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace ConsoleApp1.Functions
 {
     public class TranslateImpl : IMethodCallTranslator
     {
+        private readonly ISqlExpressionFactory _expressionFactory;
 
         private static readonly MethodInfo _encryptMethod
             = typeof(DbFunctionsExtensions).GetMethod(
@@ -23,25 +25,26 @@ namespace ConsoleApp1.Functions
                 nameof(DbFunctionsExtensions.DecryptByKey),
                 new[] { typeof(DbFunctions), typeof(byte[]) });
 
-        public Expression Translate(MethodCallExpression methodCallExpression)
+        public TranslateImpl(ISqlExpressionFactory expressionFactory)
         {
-            if (methodCallExpression.Method == _encryptMethod)
+            _expressionFactory = expressionFactory;
+        }
+
+        public SqlExpression Translate(SqlExpression instance, MethodInfo method, IReadOnlyList<SqlExpression> arguments)
+        {
+            var args = new List<SqlExpression> { arguments[1], arguments[2] }; // cut the first parameter from extension function
+            if (method == _encryptMethod)
             {
-                var password = methodCallExpression.Arguments[1];
-                var value = methodCallExpression.Arguments[2];
-                return new EncryptExpression(password, value);
+                return _expressionFactory.Function(instance, "EncryptByPassPhrase", args, typeof(byte[]));
             }
-            if (methodCallExpression.Method == _decryptMethod)
+            if (method == _decryptMethod)
             {
-                var password = methodCallExpression.Arguments[1];
-                var value = methodCallExpression.Arguments[2];
-                return new DecryptExpression(password, value);
+                return _expressionFactory.Function(instance, "DecryptByPassPhrase", args, typeof(byte[]));
             }
 
-            if (methodCallExpression.Method == _decryptByKeyMethod)
+            if (method == _decryptByKeyMethod)
             {
-                var value = methodCallExpression.Arguments[1];
-                return new DecryptByKeyExpression(value);
+                return _expressionFactory.Function(instance, "DecryptByKey", args, typeof(byte[]));
             }
 
             return null;
