@@ -8,7 +8,7 @@ namespace ConsoleApp1.EFExtensions
         public static DbContextOptionsBuilder UseEncryptionFunctions(
             this DbContextOptionsBuilder optionsBuilder)
         {
-            var extension = (SqlServerDbContextOptionsExtension)GetOrCreateExtension(optionsBuilder);
+            var extension = GetOrCreateExtension(optionsBuilder);
             ((IDbContextOptionsBuilderInfrastructure)optionsBuilder).AddOrUpdateExtension(extension);
 
             return optionsBuilder;

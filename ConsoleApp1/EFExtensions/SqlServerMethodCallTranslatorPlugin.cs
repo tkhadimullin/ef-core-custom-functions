@@ -5,14 +5,18 @@ using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 
 namespace ConsoleApp1.EFExtensions
 {
-
+#pragma warning disable EF1001
     public sealed class CustomSqlServerMethodCallTranslatorPlugin : SqlServerMethodCallTranslatorProvider
+#pragma warning restore EF1001
     {
-        public CustomSqlServerMethodCallTranslatorPlugin(RelationalMethodCallTranslatorProviderDependencies dependencies) 
+        public CustomSqlServerMethodCallTranslatorPlugin(RelationalMethodCallTranslatorProviderDependencies dependencies)
+#pragma warning disable EF1001
             : base(dependencies)
+#pragma warning restore EF1001
         {
             ISqlExpressionFactory expressionFactory = dependencies.SqlExpressionFactory;
-            this.AddTranslators(new List<IMethodCallTranslator>
+
+            AddTranslators(new List<IMethodCallTranslator>
             {
                 new TranslateImpl(expressionFactory)
             });
