@@ -9,10 +9,14 @@ namespace ConsoleApp1
     {
         static void Main(string[] args)
         {
-        ILoggerFactory myLoggerFactory = LoggerFactory.Create(builder => { builder.AddConsole(); });
-        var repo = new Repo(new MyDbContext(myLoggerFactory));
+            ILoggerFactory myLoggerFactory = LoggerFactory.Create(builder => { builder.AddConsole(); });
+            var repo = new Repo(new MyDbContext(myLoggerFactory));
+            repo.SymmetricKeyName = "TestKeyWithPassword";
+            repo.SymmetricKeyPassword = "TestPassword";
             var model = repo.GetAllById(1);
+            Console.WriteLine();
             Console.WriteLine(model.First().Decrypted);
+            Console.WriteLine(model.First().Decrypted2);
             Console.ReadKey();
         }
     }
