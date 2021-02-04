@@ -10,7 +10,9 @@ namespace ConsoleApp1.EFExtensions
 #pragma warning restore EF1001
     {
         public CustomSqlServerMethodCallTranslatorPlugin(RelationalMethodCallTranslatorProviderDependencies dependencies)
+#pragma warning disable EF1001
             : base(dependencies)
+#pragma warning restore EF1001
         {
             ISqlExpressionFactory expressionFactory = dependencies.SqlExpressionFactory;
 

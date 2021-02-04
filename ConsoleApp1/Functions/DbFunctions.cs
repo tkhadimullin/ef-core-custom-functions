@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
@@ -50,38 +51,38 @@ namespace ConsoleApp1.Functions
             _expressionFactory = expressionFactory;
         }
 
-        public SqlExpression Translate(SqlExpression instance, MethodInfo method, IReadOnlyList<SqlExpression> arguments)
+        public SqlExpression Translate(SqlExpression instance, MethodInfo method, IReadOnlyList<SqlExpression> arguments, IDiagnosticsLogger<DbLoggerCategory.Query> logger)
         {
             if (method == _encryptByPassphraseMethod)
             {
                 var args = new[] { arguments[1], arguments[2] }; // cut the first parameter from extension function
-                return _expressionFactory.Function(instance, "ENCRYPTBYPASSPHRASE", args, typeof(byte[]));
+                return _expressionFactory.Function("ENCRYPTBYPASSPHRASE", args, true, new[] { true, true }, typeof(byte[]));
             }
 
             if (method == _decryptByPassphraseMethod)
             {
                 var args = new[] { arguments[1], arguments[2] }; // cut the first parameter from extension function
-                return _expressionFactory.Function(instance, "DECRYPTBYPASSPHRASE", args, typeof(byte[]));
+                return _expressionFactory.Function("DECRYPTBYPASSPHRASE", args, true, new[] { true, true }, typeof(byte[]));
             }
 
             if (method == _decryptByKeyMethod)
             {
                 var args = new[] { arguments[1], }; // cut the first parameter from extension function
-                return _expressionFactory.Function(instance, "DECRYPTBYKEY", args, typeof(byte[]));
+                return _expressionFactory.Function("DECRYPTBYKEY", args, true, new[] { true, }, typeof(byte[]));
             }
 
             if (method == _convertToVarChar1 || method == _convertToVarChar2)
             {
                 var len = arguments.Count == 3 ? ((SqlConstantExpression)arguments[2]).Value.ToString() : "MAX";
                 var args = new[] { _expressionFactory.Fragment($"VARCHAR({len})"), arguments[1], };
-                return _expressionFactory.Function(instance, "CONVERT", args, typeof(string));
+                return _expressionFactory.Function("CONVERT", args, true, new[] { false, true }, typeof(string));
             }
 
             if (method == _convertToNVarChar1 || method == _convertToNVarChar2)
             {
                 var len = arguments.Count == 3 ? ((SqlConstantExpression)arguments[2]).Value.ToString() : "MAX";
                 var args = new[] { _expressionFactory.Fragment($"NVARCHAR({len})"), arguments[1], };
-                return _expressionFactory.Function(instance, "CONVERT", args, typeof(string));
+                return _expressionFactory.Function("CONVERT", args, true, new[] { false, true }, typeof(string));
             }
 
             return null;
