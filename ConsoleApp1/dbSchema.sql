@@ -22,9 +22,9 @@ CREATE TABLE [dbo].[Table2](
 ))
 GO
 
-CREATE SYMMETRIC KEY [TestKeyWithPassword] WITH ALGORITHM = AES_128 ENCRYPTION BY PASSWORD = 'TestPassword'
+CREATE SYMMETRIC KEY [TestKeyWithPassword] WITH ALGORITHM = AES_128 ENCRYPTION BY PASSWORD = 'TestPassword!@#'
 GO
-OPEN SYMMETRIC KEY [TestKeyWithPassword] DECRYPTION BY PASSWORD = 'TestPassword'
+OPEN SYMMETRIC KEY [TestKeyWithPassword] DECRYPTION BY PASSWORD = 'TestPassword!@#'
 GO
 INSERT [dbo].[Models] ([Id], [Encrypted], [Encrypted2], [Table2Id]) 
 VALUES (

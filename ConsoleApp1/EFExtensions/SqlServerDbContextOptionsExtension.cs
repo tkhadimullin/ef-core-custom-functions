@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ConsoleApp1.EFExtensions
 {
@@ -23,7 +24,9 @@ namespace ConsoleApp1.EFExtensions
 
         void IDbContextOptionsExtension.ApplyServices(IServiceCollection services)
         {
-            services.AddSingleton<IMethodCallTranslatorProvider, CustomSqlServerMethodCallTranslatorPlugin>();
+            // this does not work and I don't know why
+            //services.TryAddSingleton<IMethodCallTranslatorProvider, CustomSqlServerMethodCallTranslatorPlugin>(); 
+            services.TryAddScoped<IMethodCallTranslatorProvider, CustomSqlServerMethodCallTranslatorPlugin>();
         }
 
         private sealed class MyDbContextOptionsExtensionInfo : DbContextOptionsExtensionInfo
@@ -38,10 +41,12 @@ namespace ConsoleApp1.EFExtensions
             {
             }
 
-            public override long GetServiceProviderHashCode()
+            public override int GetServiceProviderHashCode()
             {
                 return 0;
             }
+
+            public override bool ShouldUseSameServiceProvider(DbContextOptionsExtensionInfo other) => false;
         }
     }
 }
