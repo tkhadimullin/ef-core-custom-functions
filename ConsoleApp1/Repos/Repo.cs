@@ -22,8 +22,8 @@ namespace ConsoleApp1.Repos
                 .Select(m => new Model
                 {
                     Id = m.Id,
-                    Decrypted = EF.Functions.ConvertToVarChar(EF.Functions.DecryptByPassphrase(SymmetricKeyPassword, m.Encrypted)),
-                    Decrypted2 = EF.Functions.ConvertToVarChar(EF.Functions.DecryptByKey(m.Encrypted2)), // since the key's opened for session scope - just relying on it should do the trick
+                    Decrypted = MyDbContext.DecryptByPassphrase("TestPassword", m.Encrypted).ToString(),
+                    Decrypted2 = MyDbContext.DecryptByKey(m.Encrypted2).ToString(), // since the key's opened for session scope - just relying on it should do the trick
                     Table2 = m.Table2,
                     Encrypted = m.Encrypted,
                     Encrypted2 = m.Encrypted2
