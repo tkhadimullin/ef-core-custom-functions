@@ -26,7 +26,7 @@ namespace ConsoleApp1.EFExtensions
         {
             // this does not work and I don't know why
             //services.TryAddSingleton<IMethodCallTranslatorProvider, CustomSqlServerMethodCallTranslatorPlugin>(); 
-            services.TryAddScoped<IMethodCallTranslatorProvider, CustomSqlServerMethodCallTranslatorPlugin>();
+            services.AddScoped<IMethodCallTranslatorProvider, CustomSqlServerMethodCallTranslatorPlugin>();
         }
 
         private sealed class MyDbContextOptionsExtensionInfo : DbContextOptionsExtensionInfo
