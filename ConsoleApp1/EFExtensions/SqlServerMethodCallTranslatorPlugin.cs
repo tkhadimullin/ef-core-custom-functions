@@ -1,21 +1,24 @@
 ﻿using System.Collections.Generic;
 using ConsoleApp1.Functions;
-using Microsoft.EntityFrameworkCore.Query.ExpressionTranslators;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.ExpressionTranslators.Internal;
+using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 
 namespace ConsoleApp1.EFExtensions
 {
-
-    public class SqlServerMethodCallTranslatorPlugin : SqlServerCompositeMethodCallTranslator
+#pragma warning disable EF1001
+    public sealed class CustomSqlServerMethodCallTranslatorPlugin : SqlServerMethodCallTranslatorProvider
+#pragma warning restore EF1001
     {
-        public SqlServerMethodCallTranslatorPlugin(
-            RelationalCompositeMethodCallTranslatorDependencies dependencies)
+        public CustomSqlServerMethodCallTranslatorPlugin(RelationalMethodCallTranslatorProviderDependencies dependencies)
+#pragma warning disable EF1001
             : base(dependencies)
+#pragma warning restore EF1001
         {
-            // ReSharper disable once DoNotCallOverridableMethodsInConstructor
+            ISqlExpressionFactory expressionFactory = dependencies.SqlExpressionFactory;
+
             AddTranslators(new List<IMethodCallTranslator>
             {
-                new TranslateImpl()
+                new TranslateImpl(expressionFactory)
             });
         }
     }

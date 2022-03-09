@@ -11,7 +11,7 @@ namespace ConsoleApp1.Repos
         }
 
         protected DbSet<TEntity> Set => DbContext.Set<TEntity>();
-        
+
         public string SymmetricKeyPassword { get; set; }
 
         public string SymmetricKeyName { get; set; }
